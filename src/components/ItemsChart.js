@@ -14,31 +14,45 @@ const ItemsChart = ({ items = [] }) => {
         return num;
     };
 
+    // Map of special cases where texture names differ from item names
+    const specialCases = {
+        'block of coal': 'coal_block',
+        'block of iron': 'iron_block',
+        'block of gold': 'gold_block',
+        'block of diamond': 'diamond_block',
+        'nether quartz': 'quartz',
+        'charged certus quartz crystal': 'certus_quartz_crystal_charged',
+    };
+
     return (
         <div>
             <h2>Items</h2>
             <div className="item-grid">
-            {items.map((item, index) => {
-                const [mod, name] = item.displayName.toLowerCase().split(':');
-                const safeMod = mod || 'unknown';
-                const safeName = name || 'unknown';
-                const formattedName = safeName.replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-                const iconPath = `/assets/icons/${safeMod}/${formattedName}.png`;
-                const fallbackIcon = '/assets/icons/question_mark.png';
+                {items.map((item, index) => {
+                    const rawName = item.displayName.toLowerCase();
 
-                console.log('Icon Path:', iconPath); // Debugging
+                    // Handle special cases
+                    const textureName = specialCases[rawName]
+                        ? specialCases[rawName]
+                        : rawName
+                              .replace(/\s+/g, '_') // Replace spaces with underscores
+                              .replace(/[^a-z0-9_]/g, ''); // Remove invalid characters
 
-                return (
-                    <div
-                        key={index}
-                        className="item-icon"
-                        style={{ backgroundImage: `url(${iconPath}), url(${fallbackIcon})` }}
-                        title={item.displayName}
-                    >
-                        <span className="item-amount">{formatNumber(item.amount)}</span>
-                    </div>
-                );
-            })}
+                    const iconPath = `/assets/icons/${textureName}.png`;
+
+                    return (
+                        <div
+                            key={index}
+                            className="item-icon"
+                            style={{
+                                backgroundImage: `url(${iconPath})`, // No fallback icon
+                            }}
+                            title={item.displayName}
+                        >
+                            <span className="item-amount">{formatNumber(item.amount)}</span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

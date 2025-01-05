@@ -7,7 +7,7 @@
 .item-icon {
     width: 32px;
     height: 32px;
-    background-size: cover;
+    background-size: cover; /* Default for static icons */
     background-position: center;
     position: relative;
     display: flex;
@@ -18,13 +18,25 @@
     overflow: hidden;
 }
 
+/* Apply animation only to animated fallback items */
+.item-icon.animated {
+    background-size: 32px 256px; /* Single frame width x full spritesheet height */
+    animation: animateTexture 1s steps(8) infinite; /* Animate through 8 frames */
+}
+
+/* Animation Keyframes */
+@keyframes animateTexture {
+    0% { background-position: 0 0; } /* Frame 1 */
+    100% { background-position: 0 -256px; } /* Frame 8 */
+}
+
 .item-icon:hover {
     border-color: #aaa;
     cursor: pointer;
 }
 
 .item-amount {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     text-shadow: 1px 1px 2px black;
